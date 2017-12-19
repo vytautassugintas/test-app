@@ -1,46 +1,35 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Grid, Header } from "semantic-ui-react";
 import { increaseDepth } from "./actions";
-import { Button, Icon } from "semantic-ui-react";
+import RecursiveTree from "./RecursiveTree/RecursiveTree";
 
 export class Container extends Component {
   constructor(props) {
     super(props);
   }
 
-  createTreeRecursive(data, isSub) {
-    let children = [];
-
-    for (let child of data) {
-      if (child.children) {
-        children.push(
-          <ol>
-            <li>{child.name}</li>
-            {this.createTreeRecursive(child.children, true)}
-          </ol>
-        );
-      } else {
-        const item = (
-          <ol>
-            <li>{child.name}</li>
-          </ol>
-        );
-        children = [...children, item];
-      }
-    }
-    return <div>{children}</div>;
-  }
+  handleClick = (parent, e) => {
+    e.preventDefault();
+    this.props.dispatch(increaseDepth(parent, { name: "New Child" }));
+  };
 
   render() {
-    const list = this.createTreeRecursive(this.props.structure, false);
+    const { children } = this.props;
 
-    return <div>{list}</div>;
+    return (
+      <Grid columns={1} divided>
+        <Grid.Column>
+          <Header as="h2">Recursive</Header>
+          <RecursiveTree onAddChild={this.handleClick} children={children} />
+        </Grid.Column>
+      </Grid>
+    );
   }
 }
 
 const mapStateToProps = state => ({
-  structure: state.containerReducer.structure
+  children: state.containerReducer.structure
 });
 
 export default connect(mapStateToProps)(Container);

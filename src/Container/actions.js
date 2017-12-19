@@ -1,6 +1,9 @@
 import { INCREASE_DEPTH } from "./constants";
 
-export const increaseDepth = child => ({
+let nextItemId = 100;
+
+export const increaseDepth = (parent, child) => ({
   type: INCREASE_DEPTH,
-  child
+  parent: parent,
+  child: Object.assign({}, child, {id: nextItemId++})
 });

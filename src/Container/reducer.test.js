@@ -1,63 +1,43 @@
-import { add, edit, remove } from "./actions";
+import { increaseDepth } from "./actions";
 import reducer from "./reducer";
 
 describe("reducer", () => {
-  it("should add item to state items", () => {
-    expect(reducer(undefined, add({ title: "item" }))).toEqual({
-      items: [
-        {
-          id: 0,
-          title: "item"
-        }
-      ]
-    });
-  });
-
-  it("should edit item by its id", () => {
+  it("should add new entry to the parent node by its id", () => {
     expect(
       reducer(
         {
-          items: [
+          structure: [
             {
               id: 0,
-              title: "item"
+              name: "Lorem",
+              children: [
+                {
+                  id: 1,
+                  name: "Ipsum"
+                }
+              ]
             }
           ]
         },
-        edit({ id: 0, title: "changed title" })
+        increaseDepth({ id: 1 }, { name: "new child" })
       )
     ).toEqual({
-      items: [
+      structure: [
         {
           id: 0,
-          title: "changed title"
-        }
-      ]
-    });
-  });
-  
-  it("should remove item by given id", () => {
-    expect(
-      reducer(
-        {
-          items: [
+          name: "Lorem",
+          children: [
             {
-              id: 0,
-              title: "item"
-            },
-            {
-              id: 5,
-              title: "item to remove"
+              id: 1,
+              name: "Ipsum",
+              children: [
+                {
+                  id: 100,
+                  name: "new child"
+                }
+              ]
             }
           ]
-        },
-        remove(5)
-      )
-    ).toEqual({
-      items: [
-        {
-          id: 0,
-          title: "item"
         }
       ]
     });
